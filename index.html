@@ -1,1 +1,30 @@
-<!DOCTYPE html>\n<html lang="ru">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Профессиональный юридический интерфейс</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f4;\n            margin: 0;\n            padding: 20px;\n        }\n        .container {\n            max-width: 600px;\n            margin: auto;\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n        }\n        h1 {\n            color: #333;\n        }\n        label {\n            display: block;\n            margin: 10px 0 5px;\n        }\n        input[type="text"] {\n            width: 100%;\n            padding: 10px;\n            border: 1px solid #ccc;\n            border-radius: 4px;\n        }\n        button {\n            background-color: #5cb85c;\n            color: white;\n            padding: 10px 15px;\n            border: none;\n            border-radius: 4px;\n            cursor: pointer;\n        }\n        button:hover {\n            background-color: #4cae4c;\n        }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <h1>Введите адрес кошелька USDT</h1>\n        <form id="usdtForm">\n            <label for="usdtAddress">Адрес USDT:</label>\n            <input type="text" id="usdtAddress" name="usdtAddress" required placeholder="Введите адрес USDT" pattern="^0x[a-fA-F0-9]{40}$" title="Введите правильный адрес USDT в формате 0x...">\n            <button type="submit">Подать</button>\n        </form>\n    </div>\n    <script>\n        document.getElementById('usdtForm').addEventListener('submit', function (e) {\n            e.preventDefault();\n            const address = document.getElementById('usdtAddress').value;\n            if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {\n                alert('Пожалуйста, введите действительный адрес USDT.');\n            } else {\n                alert('Адрес USDT успешно добавлен.');\n                // Здесь должен быть код для отправки адреса на сервер или другую ситуацию обработки\n            }\n        });\n    </script>\n</body>\n</html>
+<form id="two-step-form">
+    <div id="step-1">
+        <h2>Шаг 1: Личные данные</h2>
+        <label for="amount">Сумма:</label>
+        <input type="text" id="amount" name="amount" required>
+        
+        <label for="description">Описание:</label>
+        <input type="text" id="description" name="description" required>
+        
+        <label for="recipient">Получатель:</label>
+        <input type="text" id="recipient" name="recipient" required>
+        
+        <button type="button" onclick="nextStep()">Далее</button>
+    </div>
+    
+    <div id="step-2" style="display:none;">
+        <h2>Шаг 2: Кошелек USDT</h2>
+        <label for="usdt-wallet">Кошелек USDT:</label>
+        <input type="text" id="usdt-wallet" name="usdt-wallet" required pattern="^0x[a-fA-F0-9]{40}$" title="Пожалуйста, введите допустимый адрес USDT в формате 0x...">
+        
+        <button type="submit">Отправить</button>
+    </div>
+</form>
+
+<script>
+function nextStep() {
+    document.getElementById('step-1').style.display = 'none';
+    document.getElementById('step-2').style.display = 'block';
+}
+</script>
