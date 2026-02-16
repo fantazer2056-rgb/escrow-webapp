@@ -2,22 +2,448 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escrow Service - Legal Guarantee Platform</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #2c3e50;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #f5f3f0;
+      border: 3px solid #8b7355;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border: 1px solid #d4af37;
+      border-radius: 12px;
+      z-index: -1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #8b7355;
+      padding-bottom: 20px;
+    }
+
+    .seal {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #8b4513;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    .form-section {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      color: #333;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #8b7355;
+      border-radius: 6px;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      background: #fff;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-size: 14px;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8b7355;
+      font-weight: bold;
+    }
+
+    input[type="number"] {
+      padding-right: 40px;
+    }
+
+    .terms {
+      background: #f0ebe5;
+      border-left: 4px solid #8b7355;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .checkbox-group {
+      margin: 15px 0;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      font-weight: normal;
+      text-transform: none;
+      font-size: 13px;
+      letter-spacing: normal;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      cursor: pointer;
+      accent-color: #8b7355;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Georgia', serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b7355 0%, #6b5344 100%);
+      color: #f5f3f0;
+      box-shadow: 0 4px 15px rgba(139, 115, 85, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #6b5344 0%, #5a4434 100%);
+      box-shadow: 0 6px 20px rgba(139, 115, 85, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #e8e0d8;
+      color: #8b7355;
+      border: 2px solid #8b7355;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #f5f3f0;
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 12px 15px;
+      border-left: 4px solid #c33;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .success {
+      background: #efe;
+      color: #3c3;
+      padding: 12px 15px;
+      border-left: 4px solid #3c3;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .success.show {
+      display: block;
+    }
+
+    .loader {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .loader.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid #f0ebe5;
+      border-top: 3px solid #8b7355;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      font-size: 11px;
+      color: #999;
+    }
+  </style>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding-top:50px;">
-  <h2>Гарант сервис</h2>
-  <input id="amount" placeholder="Сумма сделки" />
-  <br><br>
-  <button onclick="sendData()">Создать сделку</button>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="seal">⚖️</div>
+      <h1>ESCROW SERVICE</h1>
+      <p class="subtitle">Legal Guarantee Platform</p>
+    </div>
+
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+
+    <form id="escrowForm">
+      <div class="form-section">
+        <label for="amount">Transaction Amount</label>
+        <div class="input-wrapper">
+          <input 
+            type="number" 
+            id="amount" 
+            placeholder="0.00" 
+            min="0.01" 
+            step="0.01"
+            required
+          />
+          <span class="currency-symbol">$</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label for="description">Transaction Description</label>
+        <textarea 
+          id="description" 
+          placeholder="Describe the nature of the transaction..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-section">
+        <label for="recipient">Recipient Information</label>
+        <input 
+          type="text" 
+          id="recipient" 
+          placeholder="Full name or organization"
+          required
+        />
+      </div>
+
+      <div class="terms">
+        <strong>Legal Notice:</strong> By creating this escrow transaction, you agree to our terms of service and confirm that this transaction complies with all applicable laws and regulations.
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="agree" required />
+          I agree to the terms and conditions
+        </label>
+        <label>
+          <input type="checkbox" id="legal" required />
+          I confirm this transaction is legally compliant
+        </label>
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Create Transaction</button>
+      </div>
+    </form>
+
+    <div class="footer">
+      © 2026 Escrow Legal Services | Secure & Verified
+    </div>
+  </div>
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    function sendData() {
-      const amount = document.getElementById("amount").value;
-      tg.sendData(JSON.stringify({amount: amount}));
+    
+    try {
+      tg.expand();
+      tg.enableClosingConfirmation();
+    } catch (e) {
+      console.log('Telegram Web App not available:', e.message);
     }
+
+    const form = document.getElementById('escrowForm');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+    const loader = document.getElementById('loader');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showError(message) {
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      setTimeout(() => errorDiv.classList.remove('show'), 5000);
+    }
+
+    function showSuccess(message) {
+      successDiv.textContent = message;
+      successDiv.classList.add('show');
+      setTimeout(() => successDiv.classList.remove('show'), 5000);
+    }
+
+    function resetForm() {
+      form.reset();
+      errorDiv.classList.remove('show');
+      successDiv.classList.remove('show');
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const amount = document.getElementById('amount').value;
+      const description = document.getElementById('description').value;
+      const recipient = document.getElementById('recipient').value;
+      const agree = document.getElementById('agree').checked;
+      const legal = document.getElementById('legal').checked;
+
+      // Validation
+      if (!amount || parseFloat(amount) <= 0) {
+        showError('Please enter a valid transaction amount');
+        return;
+      }
+
+      if (!description.trim()) {
+        showError('Please provide a transaction description');
+        return;
+      }
+
+      if (!recipient.trim()) {
+        showError('Please provide recipient information');
+        return;
+      }
+
+      if (!agree || !legal) {
+        showError('You must agree to all terms and conditions');
+        return;
+      }
+
+      // Show loader
+      loader.classList.add('show');
+      submitBtn.disabled = true;
+
+      try {
+        const transactionData = {
+          amount: parseFloat(amount),
+          description: description,
+          recipient: recipient,
+          timestamp: new Date().toISOString(),
+          version: '2.0'
+        };
+
+        if (typeof tg !== 'undefined' && tg.sendData) {
+          tg.sendData(JSON.stringify(transactionData));
+        } else {
+          console.log('Transaction data:', transactionData);
+          showSuccess('Transaction prepared successfully!');
+          setTimeout(() => resetForm(), 2000);
+        }
+      } catch (error) {
+        showError('Error processing transaction: ' + error.message);
+        loader.classList.remove('show');
+        submitBtn.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
